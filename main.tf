@@ -56,3 +56,23 @@ module "aks" {
 
   depends_on = [module.network, module.container_registry]
 }
+
+module "bastion" {
+  source              = "./modules/bastion"
+  bastion_vm_name     = "Fab-dev-bastion"
+  location            = var.location
+  resource_group_name = module.network.resource_group_name
+  subnet_id           = module.network.public_subnet_1_id
+  vm_size             = var.bastion_vm_size
+  admin_username      = var.bastion_admin_username
+
+  aks_id              = module.aks.cluster_id
+  aks_name            = var.aks_cluster_name
+  aks_rg_name         = module.network.resource_group_name
+
+  # Reuse the same AKS admin group + users for VM Administrator Login (SSH + sudo)
+  bastion_admin_group_object_ids = var.aks_aad_admin_group_object_ids
+  bastion_admin_users            = var.aks_admin_users
+
+  depends_on = [module.network, module.aks]
+}

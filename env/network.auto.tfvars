@@ -57,3 +57,7 @@ aks_admin_users = [
 acr_name                    = "fabhotelsdev"
 acr_sku                     = "Premium"
 acr_zone_redundancy_enabled = true
+
+# Bastion values
+bastion_vm_size        = "Standard_B2s"
+bastion_admin_username = "azureuser"

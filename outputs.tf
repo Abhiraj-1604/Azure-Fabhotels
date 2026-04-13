@@ -21,3 +21,12 @@ output "nat_gateway_id" {
 output "nat_gateway_public_ip" {
   value = module.network.nat_gateway_public_ip
 }
+
+output "bastion_public_ip" {
+  value = module.bastion.bastion_public_ip
+}
+
+output "bastion_private_key" {
+  value     = module.bastion.bastion_private_key
+  sensitive = true
+}

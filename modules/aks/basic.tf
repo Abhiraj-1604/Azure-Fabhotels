@@ -43,6 +43,10 @@ resource "azurerm_kubernetes_cluster" "aks_cluster" {
     os_sku               = "Ubuntu"
     os_disk_size_gb      = 128            # Explicit disk size avoids slow auto-sizing
     os_disk_type         = "Managed"      # Ephemeral is fastest but requires large VM; Managed is safe default
+    
+    upgrade_settings {
+      max_surge = "10%"
+    }
   }
 
   # --- NETWORKING CONFIGURATION ---
@@ -57,10 +61,5 @@ resource "azurerm_kubernetes_cluster" "aks_cluster" {
 
   # --- TAGS ---
   tags = var.tags
-
-  lifecycle {
-    ignore_changes = [
-      default_node_pool[0].upgrade_settings
-    ]
-  }
 }
+

@@ -18,9 +18,7 @@ resource "azurerm_kubernetes_cluster_node_pool" "additional_nodepool" {
   
   tags                  = var.tags
 
-  lifecycle {
-    ignore_changes = [
-      upgrade_settings
-    ]
+  upgrade_settings {
+    max_surge = "10%"
   }
 }

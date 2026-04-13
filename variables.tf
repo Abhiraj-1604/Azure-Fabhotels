@@ -126,6 +126,18 @@ variable "aks_aad_admin_group_object_ids" {
 
 variable "aks_admin_users" {
   description = "List of AAD user Object IDs to add to the Terraform-managed AKS Admins group. They get AKS RBAC Cluster Admin via the group."
-  type        = list(string)
   default     = []
+}
+
+# Bastion Variables
+variable "bastion_vm_size" {
+  description = "Size of the Bastion VM"
+  type        = string
+  default     = "Standard_B2s"
+}
+
+variable "bastion_admin_username" {
+  description = "Admin username for the Bastion VM"
+  type        = string
+  default     = "azureuser"
 }

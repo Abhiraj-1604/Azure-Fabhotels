@@ -33,3 +33,11 @@ output "private_subnet_1_id" {
 output "private_subnet_2_id" {
   value = azurerm_subnet.snet_mumbai_private2.id
 }
+
+output "public_subnet_1_id" {
+  value = azurerm_subnet.snet_mumbai_public1.id
+}
+
+output "public_subnet_2_id" {
+  value = azurerm_subnet.snet_mumbai_public2.id
+}
