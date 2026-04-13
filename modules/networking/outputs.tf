@@ -21,3 +21,15 @@ output "nat_gateway_id" {
 output "nat_gateway_public_ip" {
   value = azurerm_public_ip.pip_nat_mumbai.ip_address
 }
+
+output "resource_group_name" {
+  value = azurerm_resource_group.rg_project.name
+}
+
+output "private_subnet_1_id" {
+  value = azurerm_subnet.snet_mumbai_private1.id
+}
+
+output "private_subnet_2_id" {
+  value = azurerm_subnet.snet_mumbai_private2.id
+}

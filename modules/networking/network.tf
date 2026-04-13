@@ -8,8 +8,7 @@ resource "azurerm_virtual_network" "vnet_mumbai" {
   location            = azurerm_resource_group.rg_project.location
   resource_group_name = azurerm_resource_group.rg_project.name
   address_space       = var.address_space
-  dns_servers         = ["10.0.0.4", "10.0.0.5"]
-
+  # dns_servers not set → uses Azure default DNS (168.63.129.16), which is correct for AKS
 }
 
 resource "azurerm_public_ip" "pip_nat_mumbai" {
