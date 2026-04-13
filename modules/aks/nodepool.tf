@@ -17,4 +17,10 @@ resource "azurerm_kubernetes_cluster_node_pool" "additional_nodepool" {
   os_disk_type          = "Managed"
   
   tags                  = var.tags
+
+  lifecycle {
+    ignore_changes = [
+      upgrade_settings
+    ]
+  }
 }

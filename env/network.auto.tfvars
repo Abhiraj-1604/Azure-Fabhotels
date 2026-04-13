@@ -45,6 +45,7 @@ aks_aad_admin_group_object_ids = ["0bc0616d-6a81-48d2-8e19-085ce98e2d3e"]  # Fab
 # Get Object ID: az ad user show --id <email> --query id -o tsv
 aks_admin_users = [
   "7c0ecbfa-e650-4586-89e8-9022e78b15da",   # abhishek@fabhotels1.onmicrosoft.com
+  "91f7129a-c2ba-4efa-9534-1ba94a2d4f95"
   
 ]
 
