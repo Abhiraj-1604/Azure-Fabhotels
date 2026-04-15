@@ -56,6 +56,13 @@ resource "azurerm_subnet" "snet_mumbai_public2" {
   address_prefixes     = [var.public_subnet_address_prefixes[1]]
 }
 
+resource "azurerm_subnet" "snet_mumbai_public3" {
+  name                 = "snet-${var.project}-${var.environment}-${var.region}-public-app-gateway"
+  resource_group_name  = azurerm_resource_group.rg_project.name
+  virtual_network_name = azurerm_virtual_network.vnet_mumbai.name
+  address_prefixes     = [var.public_subnet_address_prefixes[2]]
+}
+
 resource "azurerm_subnet" "snet_mumbai_private1" {
   name                 = "snet-${var.project}-${var.environment}-${var.region}-private-1"
   resource_group_name  = azurerm_resource_group.rg_project.name

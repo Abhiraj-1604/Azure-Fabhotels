@@ -2,25 +2,26 @@ data "azurerm_client_config" "current" {}
 
 resource "azurerm_kubernetes_cluster" "aks_cluster" {
   # --- BASICS CONFIGURATION ---
-  name                      = var.cluster_name
-  location                  = var.location
-  resource_group_name       = var.resource_group_name
-  dns_prefix                = var.dns_prefix
-  sku_tier                  = var.sku_tier
-  kubernetes_version        = var.kubernetes_version
+  name                = var.cluster_name
+  location            = var.location
+  resource_group_name = var.resource_group_name
+  node_resource_group = "${var.resource_group_name}-cluster-nodes"
+  dns_prefix          = var.dns_prefix
+  sku_tier            = var.sku_tier
+  kubernetes_version  = var.kubernetes_version
 
   # NOTE: Upgrade channels removed — they add significant time during initial cluster creation.
   # Re-enable post-deployment: automatic_upgrade_channel = "patch", node_os_upgrade_channel = "NodeImage"
 
   # --- SECURITY CONFIGURATION ---
-  local_account_disabled    = true
+  local_account_disabled = true
 
   azure_active_directory_role_based_access_control {
     azure_rbac_enabled     = true
     tenant_id              = data.azurerm_client_config.current.tenant_id
     admin_group_object_ids = var.aad_admin_group_object_ids
   }
-  
+
   identity {
     type         = "UserAssigned"
     identity_ids = [azurerm_user_assigned_identity.aks_identity.id]
@@ -30,7 +31,7 @@ resource "azurerm_kubernetes_cluster" "aks_cluster" {
   workload_identity_enabled = var.workload_identity_enabled
 
   # --- INTEGRATIONS CONFIGURATION ---
-  azure_policy_enabled      = var.azure_policy_enabled
+  azure_policy_enabled = var.azure_policy_enabled
 
   # --- DEFAULT NODEPOOL CONFIGURATION ---
   default_node_pool {
@@ -41,16 +42,16 @@ resource "azurerm_kubernetes_cluster" "aks_cluster" {
     max_count            = var.default_max_count
     vnet_subnet_id       = var.vnet_subnet_id
     os_sku               = "Ubuntu"
-    os_disk_size_gb      = 128            # Explicit disk size avoids slow auto-sizing
-    os_disk_type         = "Managed"      # Ephemeral is fastest but requires large VM; Managed is safe default
-    
+    os_disk_size_gb      = 64        # Explicit disk size avoids slow auto-sizing
+    os_disk_type         = "Managed" # Ephemeral is fastest but requires large VM; Managed is safe default
+
     upgrade_settings {
       max_surge = "10%"
     }
   }
 
   # --- NETWORKING CONFIGURATION ---
-  private_cluster_enabled   = var.private_cluster_enabled
+  private_cluster_enabled = var.private_cluster_enabled
 
   network_profile {
     network_plugin      = var.network_plugin

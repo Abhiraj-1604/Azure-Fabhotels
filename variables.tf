@@ -80,9 +80,10 @@ variable "aks_default_max_count" {
 
 variable "aks_additional_node_pools" {
   type = map(object({
-    vm_size   = string
-    min_count = number
-    max_count = number
+    vm_size     = string
+    min_count   = number
+    max_count   = number
+    node_labels = optional(map(string))
   }))
 }
 
