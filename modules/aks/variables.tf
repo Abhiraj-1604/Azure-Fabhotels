@@ -34,3 +34,59 @@ variable "aad_admin_group_object_ids" {
   type        = list(string)
   default     = []
 }
+
+# ── INGRESS GATEWAY (APPLICATION GATEWAY) ────────────────────────────────────
+
+variable "ingress_gateway_enabled" {
+  description = "Enable Application Gateway Ingress Controller (AGIC)"
+  type        = bool
+  default     = false
+}
+
+variable "appgw_subnet_id" {
+  description = "The ID of the subnet where Application Gateway will be deployed"
+  type        = string
+  default     = ""
+}
+
+variable "appgw_sku_name" {
+  description = "The name of the Application Gateway SKU"
+  type        = string
+  default     = "Standard_v2"
+}
+
+variable "appgw_sku_tier" {
+  description = "The tier of the Application Gateway SKU"
+  type        = string
+  default     = "Standard_v2"
+}
+
+variable "appgw_capacity" {
+  description = "The number of instances of the Application Gateway (used when autoscaling is disabled)"
+  type        = number
+  default     = 2
+}
+
+variable "appgw_autoscale_enabled" {
+  description = "Enable autoscaling for Application Gateway"
+  type        = bool
+  default     = true
+}
+
+variable "appgw_autoscale_min_capacity" {
+  description = "Minimum number of instances for Application Gateway autoscaling"
+  type        = number
+  default     = 0
+}
+
+variable "appgw_autoscale_max_capacity" {
+  description = "Maximum number of instances for Application Gateway autoscaling"
+  type        = number
+  default     = 5
+}
+
+variable "appgw_availability_zones" {
+  description = "Availability zones for the Application Gateway"
+  type        = list(string)
+  default     = ["1", "2"]
+}

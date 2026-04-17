@@ -33,6 +33,14 @@ resource "azurerm_kubernetes_cluster" "aks_cluster" {
   # --- INTEGRATIONS CONFIGURATION ---
   azure_policy_enabled = var.azure_policy_enabled
 
+  # Application Gateway Ingress Controller integration
+  dynamic "ingress_application_gateway" {
+    for_each = var.ingress_gateway_enabled ? [1] : []
+    content {
+      gateway_id = azurerm_application_gateway.appgw[0].id
+    }
+  }
+
   # --- DEFAULT NODEPOOL CONFIGURATION ---
   default_node_pool {
     name                 = var.default_node_pool_name
@@ -60,7 +68,12 @@ resource "azurerm_kubernetes_cluster" "aks_cluster" {
     dns_service_ip      = var.dns_service_ip
   }
 
+
+
   # --- TAGS ---
   tags = var.tags
+
+  # Ensure Application Gateway is created first if AGIC is enabled
+  depends_on = [azurerm_application_gateway.appgw]
 }
 

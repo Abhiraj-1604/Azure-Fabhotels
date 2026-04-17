@@ -79,6 +79,12 @@ resource "azurerm_role_assignment" "bastion_vm_admin_group" {
   role_definition_name             = "Virtual Machine Administrator Login"
   principal_id                     = var.bastion_admin_group_object_ids[count.index]
   skip_service_principal_aad_check = true
+
+  # Azure ARM API always returns scope with lowercase 'resourcegroups' but Terraform
+  # sends 'resourceGroups'. This causes a permanent diff → forced replacement.
+  lifecycle {
+    ignore_changes = [scope]
+  }
 }
 
 # Grant individual users "Virtual Machine Administrator Login" (SSH + sudo)
@@ -87,4 +93,10 @@ resource "azurerm_role_assignment" "bastion_vm_admin_users" {
   scope                = azurerm_linux_virtual_machine.bastion.id
   role_definition_name = "Virtual Machine Administrator Login"
   principal_id         = var.bastion_admin_users[count.index]
+
+  # Azure ARM API always returns scope with lowercase 'resourcegroups' but Terraform
+  # sends 'resourceGroups'. This causes a permanent diff → forced replacement.
+  lifecycle {
+    ignore_changes = [scope]
+  }
 }
