@@ -2,9 +2,10 @@
 resource "azurerm_kubernetes_cluster_node_pool" "additional_nodepool" {
   for_each = var.additional_node_pools
 
-  name                  = each.key
-  kubernetes_cluster_id = azurerm_kubernetes_cluster.aks_cluster.id
-  vm_size               = each.value.vm_size
+  name                        = each.key
+  temporary_name_for_rotation = "tmp${substr(each.key, 0, 9)}"
+  kubernetes_cluster_id       = azurerm_kubernetes_cluster.aks_cluster.id
+  vm_size                     = each.value.vm_size
 
   auto_scaling_enabled = true
   min_count            = each.value.min_count

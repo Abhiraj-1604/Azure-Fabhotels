@@ -15,18 +15,41 @@ aks_default_max_count      = 2
 # AKS values (Node pools)
 aks_additional_node_pools = {
   argonodepool = {
-    vm_size   = "Standard_D2as_v5"
+    vm_size   = "Standard_D4as_v5"
     min_count = 1
     max_count = 1
     node_labels = {
       "node-pool" = "argocd"
     }
   }
-  marsnp = {
-    vm_size   = "Standard_D2as_v5"
+
+  earthnp = {
+    vm_size   = "Standard_D4as_v5"
     min_count = 1
     max_count = 1
+    node_labels = {
+      "node-pool" = "earth"
+    }
   }
+
+  earthdbnp = {
+    vm_size   = "Standard_D4as_v5"
+    min_count = 1
+    max_count = 5
+    node_labels = {
+      "node-pool" = "earth-db"
+    }
+  }
+
+  nginxphpnp = {
+    vm_size   = "Standard_D4as_v5"
+    min_count = 1
+    max_count = 1
+    node_labels = {
+      "nginx" = "php"
+    }
+  }
+
 }
 
 # AKS values (Networking)
