@@ -14,6 +14,11 @@ resource "azurerm_network_security_group" "bastion_nsg" {
     source_address_prefix      = "*"
     destination_address_prefix = "*"
   }
+
+  # Console-managed rules (IP-restricted SSH, Grafana port, etc.) are owned outside Terraform
+  lifecycle {
+    ignore_changes = [security_rule]
+  }
 }
 
 resource "azurerm_network_interface_security_group_association" "bastion_nsg_assoc" {

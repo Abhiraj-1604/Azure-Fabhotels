@@ -9,6 +9,10 @@ variable "default_vm_size" { type = string }
 variable "default_min_count" { type = number }
 variable "default_max_count" { type = number }
 variable "vnet_subnet_id" { type = string }
+variable "vnet_id" {
+  description = "VNet ID — required for private DNS zone VNet link when private_cluster_enabled = true"
+  type        = string
+}
 variable "private_cluster_enabled" { type = bool }
 variable "network_plugin" { type = string }
 variable "network_plugin_mode" { type = string }

@@ -23,21 +23,21 @@ aks_additional_node_pools = {
     }
   }
 
-  earthnp = {
+  venusnp = {
     vm_size   = "Standard_D4as_v5"
     min_count = 1
     max_count = 1
     node_labels = {
-      "node-pool" = "earth"
+      "node-pool" = "venus"
     }
   }
 
-  earthdbnp = {
+  venusdbnp = {
     vm_size   = "Standard_D4as_v5"
     min_count = 1
     max_count = 5
     node_labels = {
-      "node-pool" = "earth-db"
+      "node-pool" = "venus-db"
     }
   }
 
@@ -53,7 +53,7 @@ aks_additional_node_pools = {
 }
 
 # AKS values (Networking)
-aks_private_cluster_enabled = false # Private cluster = Azure auto-creates private DNS zone → 30-60+ min extra
+aks_private_cluster_enabled = true # Private cluster: API server only accessible from within the VNet (via Bastion)
 aks_network_plugin          = "azure"
 aks_network_plugin_mode     = "overlay"
 aks_service_cidr            = "172.16.0.0/16"

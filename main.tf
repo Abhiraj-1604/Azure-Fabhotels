@@ -36,6 +36,7 @@ module "aks" {
   default_max_count      = var.aks_default_max_count
 
   vnet_subnet_id        = module.network.private_subnet_1_id
+  vnet_id               = module.network.vnet_id
   additional_node_pools = var.aks_additional_node_pools
 
   private_cluster_enabled = var.aks_private_cluster_enabled

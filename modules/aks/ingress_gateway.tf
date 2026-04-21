@@ -26,11 +26,19 @@ resource "azurerm_user_assigned_identity" "agic_identity" {
 }
 
 # Grant AGIC identity Contributor role on the node resource group (for managing App Gateway)
+# NOTE: depends_on AKS cluster because node_resource_group is created by Azure during cluster provisioning
 resource "azurerm_role_assignment" "agic_contributor_node_rg" {
   count                = var.ingress_gateway_enabled ? 1 : 0
   scope                = "/subscriptions/${data.azurerm_client_config.current.subscription_id}/resourceGroups/${local.node_resource_group}"
   role_definition_name = "Contributor"
   principal_id         = azurerm_user_assigned_identity.agic_identity[0].principal_id
+
+  depends_on = [azurerm_kubernetes_cluster.aks_cluster]
+
+  # scope becomes (known after apply) when data.client_config re-reads → forces replacement
+  lifecycle {
+    ignore_changes = [scope, principal_type, role_definition_id, skip_service_principal_aad_check]
+  }
 }
 
 # Grant AGIC identity Reader role on the main resource group
@@ -39,6 +47,11 @@ resource "azurerm_role_assignment" "agic_reader_main_rg" {
   scope                = "/subscriptions/${data.azurerm_client_config.current.subscription_id}/resourceGroups/${var.resource_group_name}"
   role_definition_name = "Reader"
   principal_id         = azurerm_user_assigned_identity.agic_identity[0].principal_id
+
+  # scope becomes (known after apply) when data.client_config re-reads → forces replacement
+  lifecycle {
+    ignore_changes = [scope, principal_type, role_definition_id, skip_service_principal_aad_check]
+  }
 }
 
 # Grant AGIC identity Network Contributor role on the App Gateway subnet (required for AGIC to manage App Gateway)
@@ -58,11 +71,13 @@ resource "azurerm_role_assignment" "agic_network_contributor_vnet" {
 }
 
 # Public IP for Application Gateway
+# NOTE: deployed in main resource group (not node RG) to avoid a dependency cycle:
+#   appgw_pip → [depends_on] → aks_cluster → appgw → appgw_pip
 resource "azurerm_public_ip" "appgw_pip" {
   count               = var.ingress_gateway_enabled ? 1 : 0
   name                = "${var.cluster_name}-appgw-pip"
   location            = var.location
-  resource_group_name = local.node_resource_group
+  resource_group_name = var.resource_group_name
   allocation_method   = "Static"
   sku                 = "Standard"
   zones               = var.appgw_availability_zones
@@ -85,7 +100,7 @@ resource "azurerm_application_gateway" "appgw" {
   count               = var.ingress_gateway_enabled ? 1 : 0
   name                = "${var.cluster_name}-appgw"
   location            = var.location
-  resource_group_name = local.node_resource_group
+  resource_group_name = var.resource_group_name
   zones               = var.appgw_availability_zones
 
   sku {
@@ -171,6 +186,7 @@ resource "azurerm_application_gateway" "appgw" {
       ssl_certificate,           # AGIC manages TLS certificates
       url_path_map,              # AGIC adds path-based routing maps
       tags,                      # AGIC may annotate with its own tags
+      identity,                  # AGIC attaches appgw-kv-identity for Key Vault cert access
     ]
   }
 

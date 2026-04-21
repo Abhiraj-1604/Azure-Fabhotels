@@ -33,17 +33,6 @@ resource "azurerm_network_security_group" "nsg_public" {
   }
 
   # Allow SSH (restrict source_address_prefix to your IP in production)
-  security_rule {
-    name                       = "AllowSSH"
-    priority                   = 120
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "Tcp"
-    source_port_range          = "*"
-    destination_port_range     = "22"
-    source_address_prefix      = "*"
-    destination_address_prefix = "*"
-  }
 
   # Deny all other inbound
   security_rule {
@@ -62,6 +51,11 @@ resource "azurerm_network_security_group" "nsg_public" {
     environment = var.environment
     project     = var.project
     tier        = "public"
+  }
+
+  # Console-managed rules (e.g. AllowSSH with specific IPs) are owned outside Terraform
+  lifecycle {
+    ignore_changes = [security_rule]
   }
 }
 

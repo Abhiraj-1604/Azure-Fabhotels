@@ -59,7 +59,9 @@ resource "azurerm_kubernetes_cluster" "aks_cluster" {
   }
 
   # --- NETWORKING CONFIGURATION ---
-  private_cluster_enabled = var.private_cluster_enabled
+  private_cluster_enabled             = var.private_cluster_enabled
+  private_dns_zone_id                 = var.private_cluster_enabled ? "System" : null
+  private_cluster_public_fqdn_enabled = false
 
   network_profile {
     network_plugin      = var.network_plugin
@@ -75,5 +77,13 @@ resource "azurerm_kubernetes_cluster" "aks_cluster" {
 
   # Ensure Application Gateway is created first if AGIC is enabled
   depends_on = [azurerm_application_gateway.appgw]
+
+  lifecycle {
+    ignore_changes = [
+      # data.azurerm_client_config re-reads at apply time when cluster updates,
+      # making tenant_id show as (known after apply) → spurious in-place update
+      azure_active_directory_role_based_access_control,
+    ]
+  }
 }
 

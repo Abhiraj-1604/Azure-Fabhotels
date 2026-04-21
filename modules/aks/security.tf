@@ -13,3 +13,11 @@ resource "azurerm_role_assignment" "aks_uami_network_contributor" {
   role_definition_name = "Network Contributor"
   scope                = var.vnet_subnet_id
 }
+
+# UAMI needs Network Contributor on the VNet to link the auto-managed private DNS zone
+# (required when private_cluster_enabled = true and private_dns_zone_id = "System")
+resource "azurerm_role_assignment" "aks_uami_network_contributor_vnet" {
+  principal_id         = azurerm_user_assigned_identity.aks_identity.principal_id
+  role_definition_name = "Network Contributor"
+  scope                = var.vnet_id
+}
