@@ -10,14 +10,14 @@ aks_kubernetes_version     = "1.35.1" # Confirmed available: az aks get-versions
 aks_default_node_pool_name = "system" # "controlplane" is a reserved/rejected name in AKS
 aks_default_vm_size        = "Standard_D2as_v5"
 aks_default_min_count      = 1
-aks_default_max_count      = 2
+aks_default_max_count      = 20
 
 # AKS values (Node pools)
 aks_additional_node_pools = {
   argonodepool = {
     vm_size   = "Standard_D4as_v5"
     min_count = 1
-    max_count = 1
+    max_count = 3
     node_labels = {
       "node-pool" = "argocd"
     }
@@ -26,7 +26,7 @@ aks_additional_node_pools = {
   venusnp = {
     vm_size   = "Standard_D4as_v5"
     min_count = 1
-    max_count = 1
+    max_count = 25
     node_labels = {
       "node-pool" = "venus"
     }
@@ -41,14 +41,34 @@ aks_additional_node_pools = {
     }
   }
 
-  nginxphpnp = {
+  jupiternp = {
     vm_size   = "Standard_D4as_v5"
     min_count = 1
     max_count = 1
     node_labels = {
+      "node-pool" = "jupiter"
+    }
+  }
+
+  jupiterdbnp = {
+    vm_size   = "Standard_D4as_v5"
+    min_count = 1
+    max_count = 1
+    node_labels = {
+      "node-pool" = "jupiter-db"
+    }
+  }
+
+  nginxphpnp = {
+    vm_size   = "Standard_D4as_v5"
+    min_count = 1
+    max_count = 5
+    node_labels = {
       "nginx" = "php"
     }
   }
+
+  
 
 }
 
